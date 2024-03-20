@@ -23,7 +23,7 @@ jobs:
 #          apt update 
 
       - name: Ejecutar script de comprobación
-        run: bash /tests_practicas_AS/tests/test_practica2_todos.sh
+        run: bash tests_practicas_AS/tests/test_practica2_todos.sh
 
       - name: Comprobar finalizacion del trabajo
         run: echo "Estado del trabajo ${{ job.status }}."
