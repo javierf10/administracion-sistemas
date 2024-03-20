@@ -1,4 +1,4 @@
-name: Python 3.7 Script
+name: Comprobar validez scripts
 run-name: ${{ github.actor }} ha subido un script
 
 on: [push]
