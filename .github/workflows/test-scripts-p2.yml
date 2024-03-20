@@ -17,10 +17,10 @@ jobs:
     
       - name: Instalar phyton
         run: |
-          apt update 
+
           pip install pexpect
           apt install python3-pip
-
+#          apt update 
 
       - name: Ejecutar script de comprobación
         run: bash /tests_practicas_AS/tests/test_practica2_todos.sh
