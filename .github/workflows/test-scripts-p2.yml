@@ -12,15 +12,18 @@ jobs:
     
       - name: Clonar repositorio al ejecutor
         uses: actions/checkout@v4
+        
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
     
       - name: Instalar phyton
-      - run: apt update 
-      - run: pip install pexpect
-      - run: apt install python3-pip
+        run: |
+          apt update 
+          pip install pexpect
+          apt install python3-pip
+
 
       - name: Ejecutar script de comprobación
-      - run: bash /tests_practicas_AS/tests/test_practica2_todos.sh
+        run: bash /tests_practicas_AS/tests/test_practica2_todos.sh
 
       - name: Comprobar finalizacion del trabajo
-      - run: echo "Estado del trabajo ${{ job.status }}."
+        run: echo "Estado del trabajo ${{ job.status }}."
