@@ -25,6 +25,7 @@ jobs:
       - name: Ejecutar script de comprobación
         run: |
           cd tests_practicas_AS/tests
+          chmod u+x *
           ls -l
           bash test_practica2_todos.sh
 #          bash tests_practicas_AS/tests/test_practica2_todos.sh
