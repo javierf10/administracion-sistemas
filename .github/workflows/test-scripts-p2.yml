@@ -15,8 +15,6 @@ jobs:
         
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
 
-
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -27,16 +25,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install pexpect
         # Agrega más paquetes si es necesario
-
-
-
-    
-#      - name: Instalar phyton
-#        run: |
-
-#          pip install pexpect
-#          apt install python3-pip
-#          apt update 
 
       - name: Ejecutar script de comprobación
         run: |
