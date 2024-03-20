@@ -19,7 +19,7 @@ jobs:
         run: |
 
           pip install pexpect
-          apt install python3-pip
+#          apt install python3-pip
 #          apt update 
 
       - name: Ejecutar script de comprobación
