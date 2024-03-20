@@ -1,0 +1,29 @@
+name: Comprobar validez scripts
+run-name: ${{ github.actor }} ha subido un script
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "Rama ${{ github.ref }}, repositorio ${{ github.repository }}."
+    
+      - name: Clonar repositorio al ejecutor
+        uses: actions/checkout@v4
+        
+      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+    
+      - name: Instalar phyton
+        run: |
+
+          pip install pexpect
+#          apt install python3-pip
+#          apt update 
+
+      - name: Ejecutar script de comprobación
+        run: bash /tests_practicas_AS/tests/test_practica2_todos.sh
+
+      - name: Comprobar finalizacion del trabajo
+        run: echo "Estado del trabajo ${{ job.status }}."
