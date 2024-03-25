@@ -28,11 +28,16 @@ jobs:
 
       - name: Ejecutar script de comprobación
         run: |
-          cd tests_practicas_AS/tests
-          chmod u+x *
+          cd tests_practicas_AS/utils
           cat remove_possible_users.sh
+          cd ..
+          cd tests
+          chmod u+x *
           ./test_practica3.py
+  # cd tests_practicas_AS/tests        
+          
          
-
+         
+ 
       - name: Comprobar finalizacion del trabajo
         run: echo "Estado del trabajo ${{ job.status }}."
