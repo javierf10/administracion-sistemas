@@ -31,7 +31,7 @@ jobs:
           cd tests_practicas_AS/tests
           chmod u+x *
           ls -l
-          python test_practica3.py
+          ./test_practica3.py
          
 
       - name: Comprobar finalizacion del trabajo
