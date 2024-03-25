@@ -1,4 +1,6 @@
 #!/bin/bash
+#873879, Alonso, Jaime, T, 1, B
+#797613, Falcó, Javier, T, 1, B
 
 # Script para añadir o suprimir usuarios especificados en un archivo.
 
