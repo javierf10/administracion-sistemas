@@ -1,6 +1,6 @@
 #!/bin/bash
-#816846, Aldaz, Rafael, T, 1, A
-#797613, Falcó, Javier, T, 1, A
+#873879, Alonso, Jaime, T, 1, B
+#797613, Falcó, Javier, T, 1, B
 
 #Fución que comprueba si el usuario tiene privilegios de administrador
 check_admin(){
