@@ -1,4 +1,4 @@
-name: Comprobar validez scripts
+name: Comprobar validez scripts p2
 run-name: ${{ github.actor }} ha subido un script
 
 on: [push]
