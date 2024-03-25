@@ -30,7 +30,7 @@ jobs:
         run: |
           cd tests_practicas_AS/tests
           chmod u+x *
-          ls -l
+          cat remove_possible_users.sh
           ./test_practica3.py
          
 
