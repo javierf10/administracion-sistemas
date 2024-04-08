@@ -1,4 +1,5 @@
 #!/bin/bash
+#873879, Alonso, Jaime, T, 1, B
 #797613, Falcó, Javier, T, 1, A
 
 #Fución que comprueba si el usuario tiene privilegios de administrador
