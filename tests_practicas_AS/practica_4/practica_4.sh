@@ -15,62 +15,68 @@ verificar_administrador(){
 
 # Función que crea un usuario y establece su contraseña
 crear_usuario() {
-  local nombre_usuario="$1"
-  local contrasegna="$2"
-  local nombre_completo="$3"
+  # Iterar sobre cada línea del archivo de usuarios
+  while IFS=',' read -r nombre_usuario contrasegna nombre_completo; do
+    while IFS= read -r ip; do
+      # Verificar si el usuario ya existe
+      if id -u "$nombre_usuario" >/dev/null 2>&1; then
+        echo "El usuario $nombre_usuario ya existe"
+        return
+      fi
 
-  # Verificar si el usuario ya existe
-  if id -u "$nombre_usuario" >/dev/null 2>&1; then
-    echo "El usuario $nombre_usuario ya existe"
-    return
-  fi
+      # Verificar si algún campo está vacío
+      if [[ -z "$nombre_usuario" || -z "$contrasegna" || -z "$nombre_completo" ]]; then
+        echo "Campo invalido"
+        return
+      fi
 
-  # Verificar si algún campo está vacío
-  if [[ -z "$nombre_usuario" || -z "$contrasegna" || -z "$nombre_completo" ]]; then
-    echo "Campo invalido"
-    return
-  fi
+      local directorio_personal="/home/$nombre_usuario"
 
-  local directorio_personal="/home/$nombre_usuario"
+      # Creamos el usuario con su directorio personal y grupo
+      ssh "root@$ip" useradd -u UID_MIN=1815 -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
+      
+      # Establecemos su contraseña
+      echo "$nombre_usuario:$contrasegna" | chpasswd
 
-  # Creamos el usuario con su directorio personal y grupo
-  useradd -u UID_MIN=1815 -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
-  # Establecemos su contraseña
-  echo "$nombre_usuario:$contrasegna" | chpasswd
+      # Establecemos la caducidad de la contraseña a 30 días
+      chage -d 0 -M 30 "$nombre_usuario"
 
-  # Establecemos la caducidad de la contraseña a 30 días
-  chage -d 0 -M 30 "$nombre_usuario"
+      # Copiamos los archivos de /etc/skel al directorio home del usuario
+      cp -r /etc/skel/. "$directorio_personal"
 
-  # Copiamos los archivos de /etc/skel al directorio home del usuario
-  cp -r /etc/skel/. "$directorio_personal"
-
-  echo "$nombre_completo ha sido creado"
+      echo "$nombre_completo ha sido creado"
+    done < "$ip_fichero"
+  done < "$usuarios_fichero"
 }
 
 # Función que borra un usuario y realiza un backup de su directorio home
 borrar_usuario() {
-  local nombre_usuario="$1"
+    # Iterar sobre cada línea del archivo de usuarios
+  while IFS=',' read -r nombre_usuario contrasegna nombre_completo; do
+    while IFS= read -r ip; do
 
-  local directorio_personal="/home/$nombre_usuario"
-  local directorio_backup="/extra/backup"
+      local directorio_personal="/home/$nombre_usuario"
+      local directorio_backup="/extra/backup"
 
-  # Creamos el directorio de backup si no existe
-  if [ ! -d "$directorio_backup" ]; then
-    mkdir -p "$directorio_backup"
-  fi
+      # Creamos el directorio de backup si no existe
+      if [ ! -d "$directorio_backup" ]; then
+        mkdir -p "$directorio_backup"
+      fi
 
-  # Realizamos el backup del directorio home del usuario
-  tar -cf "$directorio_backup/$nombre_usuario.tar" "$directorio_personal"
+      # Realizamos el backup del directorio home del usuario
+      tar -cf "$directorio_backup/$nombre_usuario.tar" "$directorio_personal"
 
-  # Borramos al usuario y su directorio home
-  userdel -r "$nombre_usuario"
+      # Borramos al usuario y su directorio home
+      ssh "root@$ip" "userdel -r $nombre_usuario"
+    done < "$ip_fichero"
+  done < "$usuarios_fichero"
 }
 
 # Comprobamos si el usuario actual tiene privilegios de administración
 verificar_administrador
 
 # Comprobamos si se han especificado los argumentos correctamente
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
   echo "Numero incorrecto de parametros" >&2
   exit 1
 fi
@@ -78,17 +84,13 @@ fi
 # Procesamos el fichero de entrada
 case "$1" in
   -a)
-    while IFS=',' read -r nombre_usuario contrasegna nombre_completo; do
-      crear_usuario "$nombre_usuario" "$contrasegna" "$nombre_completo"
-    done < "$2"
+    crear_usuario "$usuarios_fichero" "$ip_fichero"
     ;;
   -s)
     # Creamos el directorio de backup si no existe
     mkdir -p /extra/backup
 
-    while IFS=',' read -r nombre_usuario _ _; do
-      borrar_usuario "$nombre_usuario"
-    done < "$2"
+    borrar_usuario "$usuarios_fichero" "$ip_fichero"
     ;;
   *)
     echo "Opcion invalida" >&2
