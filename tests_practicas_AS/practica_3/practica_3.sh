@@ -33,8 +33,15 @@ crear_usuario() {
 
   local directorio_personal="/home/$nombre_usuario"
 
+ #Conseguimos el siguiente uid disponible superior a 1815
+  local uid_minimo=1815
+  local uid_actual="$uid_minimo"
+  while id "$uid_actual" >/dev/null 2>&1; do
+    ((uid_actual++))
+  done
+
   # Creamos el usuario con su directorio personal y grupo
-  useradd -u UID_MIN=1815 -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
+  useradd -u $uid_actual -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
   # Establecemos su contraseña
   echo "$nombre_usuario:$contrasegna" | chpasswd
 
