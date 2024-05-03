@@ -8,7 +8,7 @@
 # Función que comprueba si el usuario tiene privilegios de administrador
 verificar_administrador(){
 	if [ "$EUID" -ne 0 ]; then
-		echo "Este script necesita privilegios de administración" >&2
+		echo "Este script necesita privilegios de administracion" >&2
 		exit 1
 	fi
 }
@@ -42,8 +42,8 @@ crear_usuario() {
 
   # Creamos el usuario con su directorio personal y grupo
   #useradd  -c "$fullname" "$username" 2>/dev/null 
-  useradd -u $uid_actual -U -m -k /etc/skel    -d "$directorio_personal"  -s /bin/bash "$nombre_usuario" -c "$nombre_completo"
-
+  #useradd -u $uid_actual -U -m -k /etc/skel    -d "$directorio_personal"  -s /bin/bash "$nombre_usuario" -c "$nombre_completo"
+   useradd  -U -m -k /etc/skel -K UID_MIN=1815  -c "$nombre_completo" "$nombre_usuario" #2>/dev/null
   
   # Establecemos su contraseña
   echo "$nombre_usuario:$contrasegna" | chpasswd
@@ -53,6 +53,9 @@ crear_usuario() {
 
   # Copiamos los archivos de /etc/skel al directorio home del usuario
   cp -r /etc/skel/. "$directorio_personal"
+
+ #añadimos el usuario al grupo sudo
+  usermod -aG 'sudo' ${nombre_usuario} 
 
   echo "$nombre_completo ha sido creado"
 }
