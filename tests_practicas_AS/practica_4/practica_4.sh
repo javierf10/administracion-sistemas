@@ -15,6 +15,7 @@ verificar_administrador(){
 
 # Función que crea un usuario y establece su contraseña
 crear_usuario() {
+
   # Iterar sobre cada línea del archivo de usuarios
   while IFS=',' read -r nombre_usuario contrasegna nombre_completo; do
     while IFS= read -r ip; do
@@ -33,16 +34,19 @@ crear_usuario() {
       local directorio_personal="/home/$nombre_usuario"
 
       # Creamos el usuario con su directorio personal y grupo
-      ssh "root@$ip" useradd -u UID_MIN=1815 -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
+      ssh "root@$ip" useradd  -U -m -k /etc/skel -K UID_MIN=1815  -c "$nombre_completo" "$nombre_usuario"
       
       # Establecemos su contraseña
       echo "$nombre_usuario:$contrasegna" | chpasswd
 
       # Establecemos la caducidad de la contraseña a 30 días
-      chage -d 0 -M 30 "$nombre_usuario"
+      chage -M 30 "$nombre_usuario"
 
       # Copiamos los archivos de /etc/skel al directorio home del usuario
       cp -r /etc/skel/. "$directorio_personal"
+
+      #añadimos el usuario al grupo sudo
+      usermod -aG 'sudo' ${nombre_usuario}
 
       echo "$nombre_completo ha sido creado"
     done < "$ip_fichero"
