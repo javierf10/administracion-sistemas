@@ -41,7 +41,10 @@ crear_usuario() {
   done
 
   # Creamos el usuario con su directorio personal y grupo
-  useradd -u $uid_actual -d "$directorio_personal" -m -s /bin/bash "$nombre_usuario"
+  #useradd  -c "$fullname" "$username" 2>/dev/null 
+  useradd -u $uid_actual -U -m -k /etc/skel    -d "$directorio_personal"  -s /bin/bash "$nombre_usuario" -c "$nombre_completo"
+
+  
   # Establecemos su contraseña
   echo "$nombre_usuario:$contrasegna" | chpasswd
 
