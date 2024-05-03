@@ -46,7 +46,7 @@ crear_usuario() {
   echo "$nombre_usuario:$contrasegna" | chpasswd
 
   # Establecemos la caducidad de la contraseña a 30 días
-  chage -d 0 -M 30 "$nombre_usuario"
+  chage -M 30 "$nombre_usuario"
 
   # Copiamos los archivos de /etc/skel al directorio home del usuario
   cp -r /etc/skel/. "$directorio_personal"
