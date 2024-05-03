@@ -34,7 +34,7 @@ crear_usuario() {
       local directorio_personal="/home/$nombre_usuario"
 
       # Creamos el usuario con su directorio personal y grupo
-      ssh "root@$ip" useradd  -U -m -k /etc/skel -K UID_MIN=1815  -c "$nombre_completo" "$nombre_usuario"
+      ssh "as@$ip" useradd  -U -m -k /etc/skel -K UID_MIN=1815  -c "$nombre_completo" "$nombre_usuario"
       
       # Establecemos su contraseña
       echo "$nombre_usuario:$contrasegna" | chpasswd
