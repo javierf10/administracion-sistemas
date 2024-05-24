@@ -26,6 +26,6 @@ shift
 # Bucle que recorre todas las particiones, desmontándolas primero y luego extendiéndolas
 for particion in "$@"
 do
-    unmount "$particion" # Desmontar la particion primero
+    umount "$particion" # Desmontar la particion primero
     vgextend "$vg" "$particion" # Extender la particion
 done
