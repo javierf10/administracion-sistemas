@@ -9,4 +9,5 @@ if [ $# != 1 ]; then
 fi
 
 # Ejecutar el comando ssh para ver en la maquina remota con sfdisk los parametros requeridos 
-ssh -n as_base@"$1" "sudo sfdisk -s && sudo sfdisk -l && sudo df -hT | grep -v 'tmpfs'"
+#ssh -n as_base@"$1" "sudo sfdisk -s && sudo sfdisk -l && sudo df -hT | grep -v 'tmpfs'"
+ssh "$1" "sudo sfdisk -s && sudo sfdisk -l && sudo df -hT | grep -vE 'udev|tmpfs'"
