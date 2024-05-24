@@ -27,5 +27,5 @@ shift
 for particion in "$@"
 do
     umount "$particion" # Desmontar la particion primero
-    vgextend "$vg" "$particion" # Extender la particion
+    vgextend "$gv" "$particion" # Extender la particion
 done
