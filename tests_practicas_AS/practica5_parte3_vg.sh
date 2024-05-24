@@ -16,7 +16,7 @@ fi
 
 gv=$1
 
-if [ "$gv" != "vg_p5"]
+if [ "$gv" != "vg_p5" ]
 then
     echo "El grupo volumen no es el correcto" >&2
     exit 2
