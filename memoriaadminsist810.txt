@@ -1,0 +1,51 @@
+8.
+
+
+a.
+Reglas para permitir todo el tráfico dentro de las redes internas de la intranet:
+iptables -A FORWARD -i enp0s9 -j ACCEPT
+iptables -A FORWARD -i enp0s10 -j ACCEPT
+iptables -A FORWARD -s 192.168.56.0/24 -j ACCEPT
+iptables -A FORWARD -s 192.168.57.0/24 -j ACCEPT
+iptables -A FORWARD -s 192.168.58.0/24 -j ACCEPT
+
+Como la política por defecto para la cadena OUTPUT es en ACCEPT, permitimos el tráfico de salida desde el firewall hacia la extranet e Internet.
+iptables -P OUTPUT ACCEPT
+
+b.
+Permitimos el tráfico HTTP hacia el servidor web (debian2) y el tráfico SSH hacia el servidor SSH (debian5) desde la extranet.
+iptables -A FORWARD -p tcp -d 192.168.56.10 --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -d 192.168.58.10 --dport 22 -j ACCEPT
+
+Bloqueamos todo el tráfico no permitido desde la extranet.
+iptables -A FORWARD -i enp0s3 -j DROP
+
+c.
+Reglas para permitir los pings desde las interfaces de la intranet:
+iptables -A INPUT -i enp0s9 -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -i enp0s10 -p icmp --icmp-type echo-request -j ACCEPT
+
+Bloqueamos pings desde la extranet:
+iptables -A INPUT -i enp0s3 -p icmp --icmp-type echo-request -j DROP
+
+9.
+
+
+Configuramos el NAT para que utilice como IP origen la dirección pública del firewall para todo el tráfico de la intranet a la extranet con la regla:
+iptables -t nat -A POSTROUTING -o enp0s3 -j SNAT --to 192.168.59.20
+
+10.
+
+Redirigimos el tráfico entrante desde la extranet a los servidores específicos en la intranet utilizando la IP pública del firewall.
+iptables -t nat -A PREROUTING -i enp0s3 -p tcp --dport 80 -j DNAT --to-destination 192.168.56.10
+iptables -t nat -A PREROUTING -i enp0s3 -p tcp --dport 22 -j DNAT --to-destination 192.168.58.10
+
+Para guardar las reglas de iptables utilizamos el comando iptables-save al final del script:
+iptables-save > /etc/iptables/rules.v4
+
+Ademas podemos hacer uso de iptables-persistent y netfilter-persistent para que las tablas se guarden automáticamente y se carguen al reiniciar el sistema
+sudo apt-get install iptables-persistent
+sudo netfilter-persistent save
+sudo netfilter-persistent reload
+
+
